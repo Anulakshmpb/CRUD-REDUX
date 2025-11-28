@@ -39,10 +39,7 @@ const Create = () => {
     <label  className="form-label">Age </label>
     <input type="text" name="age" className="form-control"  onChange={getUserData} ></input>
    </div>
-  {/* <div className="mb-3">
-    <label  className="form-label">Password</label>
-    <input type="password"name="password" className="form-control"></input>
-  </div> */}
+ 
   <div className=" mb-3">
   <input className="form-check-input" type="radio"name='gender'value="male" onChange={getUserData} />
   <label className="form-check-label" >

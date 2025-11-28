@@ -1,36 +1,79 @@
+// ...existing code...
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
+
 
 //create action
 export const createUser = createAsyncThunk("createUser",async(data,{rejectWithValue})=>{
-  const response = await fetch("https://692691bc26e7e41498fab33f.mockapi.io/crud",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-    },
-    body:JSON.stringify(data)
-  }
-  );
-
   try {
-    const result= await Response.json();
+    const response = await fetch("https://692691bc26e7e41498fab33f.mockapi.io/crud",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+      },
+      body:JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(result);
+    }
     return result;
   } catch (error) {
-    return rejectWithValue(error);
+    return rejectWithValue(error.message || error);
   }
 })
 
 // read actoin
  export const showUser = createAsyncThunk("showUser",async(args ,{rejectWithValue})=>{
 
-  const response =await fetch("https://692691bc26e7e41498fab33f.mockapi.io/crud");
   try {
+    const response = await fetch("https://692691bc26e7e41498fab33f.mockapi.io/crud");
     const result = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(result);
+    }
     return result;
   } catch (error) {
-    return rejectWithValue(error);
+    return rejectWithValue(error.message || error);
   }
 })
 
+// delete actoin
+ export const deleteUser = createAsyncThunk("deleteUser",async(id ,{rejectWithValue})=>{
+
+  try {
+    const response = await fetch(`https://692691bc26e7e41498fab33f.mockapi.io/crud/${id}`,
+     {method:"DELETE"} 
+    );
+    const result = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(result);
+    }
+    return result;
+  } catch (error) {
+    return rejectWithValue(error.message || error);
+  }
+})
+
+
+//update action
+export const updateUser = createAsyncThunk("updateUser",async(data,{rejectWithValue})=>{
+  try {
+    const response = await fetch(`https://692691bc26e7e41498fab33f.mockapi.io/crud/${data.id}`,{
+      method:"PUT",
+      headers:{
+        "Content-Type":"application/json",
+      },
+      body:JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      return rejectWithValue(result);
+    }
+    return result;
+  } catch (error) {
+    return rejectWithValue(error.message || error);
+  }
+})
 export const userDetailSlice = createSlice({
   name: "userDetail",
   initialState: {
@@ -38,34 +81,63 @@ export const userDetailSlice = createSlice({
     loading: false,
     error: null,
   },
-  extraReducer:{
-      [createUser.pending]:(state)=>{
-        state.loading =true;
-      },
-      [createUser.fulfilled]:(state,action)=>{
-        state.loading =false;
-        state.users.push(action.payload);
-      },
-       [createUser.rejected]:(state,action)=>{
-        state.loading =false;
-        state.error = action.payload.message;
-      },
-      [showUser.pending]:(state)=>{
-        state.loading =true;
-      },
-      [showUser.fulfilled]:(state,action)=>{
-        state.loading =false;
-        state.users=action.payload;
-      },
-       [showUser.rejected]:(state,action)=>{
-        state.loading =false;
-        state.error = action.payload;
-      },
-
-    }
+  // <-- fixed property name
+  extraReducers: (builder) => {
+    builder
+      .addCase(createUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createUser.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload) state.users.push(action.payload);
+      })
+      .addCase(createUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? action.error?.message;
+      })
+      .addCase(showUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(showUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload ?? [];
+      })
+      .addCase(showUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? action.error?.message;
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.loading = false;
+        const{id}=action.payload;
+        if(id){
+          state.users = state.users.filter((ele)=>ele.id !== id);
+        }
+       console.log("delete action",action.payload);
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? action.error?.message;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = state.users.map((ele)=>
+          ele.id === action.payload.id ? action.payload : ele
+        )
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? action.error?.message;
+      });
+  }
 });
 
-
+// ...existing code...
 export const { addUser } = userDetailSlice.actions;
 
 // Export reducer correctly

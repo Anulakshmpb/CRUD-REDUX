@@ -1,0 +1,36 @@
+.modalBackground{
+	position: fixed;
+	background-color: black;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	display: flex;
+	justify-content: center;
+	align-items:center;
+	z-index: 99;
+	opacity: 0.9;
+}
+.modalContainer{
+	background-color: rgb(240, 243, 243);
+	box-shadow: 5px 5px 5px rgb(63, 63, 63);
+	padding: 10px;
+	height: 300px;
+	width: 300px;
+	color: black;
+	font-weight: bold;
+	border-radius: 15px;
+}
+.button{
+	font-size:"22px";
+	position:"absolute";
+	top: "10px";
+	right: "10px";
+	background: "none";
+	border: "none";
+	cursor: "pointer";
+	margin: 2px;
+}
+.div{
+	margin: 20px;
+}
