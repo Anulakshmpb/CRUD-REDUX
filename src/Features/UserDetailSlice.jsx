@@ -1,4 +1,3 @@
-// ...existing code...
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 
 
@@ -80,8 +79,14 @@ export const userDetailSlice = createSlice({
     users: [],
     loading: false,
     error: null,
+    searchData:[],
   },
-  // <-- fixed property name
+  reducers :{
+    searchUser :(state,action)=>{
+      console.log(action.payload);
+      state.searchData = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createUser.pending, (state) => {
@@ -137,8 +142,6 @@ export const userDetailSlice = createSlice({
   }
 });
 
-// ...existing code...
-export const { addUser } = userDetailSlice.actions;
+export const { addUser ,searchUser } = userDetailSlice.actions;
 
-// Export reducer correctly
 export default userDetailSlice.reducer;
