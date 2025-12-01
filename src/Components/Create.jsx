@@ -41,13 +41,13 @@ const Create = () => {
    </div>
  
   <div className=" mb-3">
-  <input className="form-check-input" type="radio"name='gender'value="male" onChange={getUserData} />
+  <input className="form-check-input" type="radio"name='gender'value="Male" onChange={getUserData} />
   <label className="form-check-label" >
     Male
   </label>
 </div>
 <div className="mb-3">
-  <input className="form-check-input" type="radio" name='gender' value="female" onChange={getUserData}/>
+  <input className="form-check-input" type="radio" name='gender' value="Female" onChange={getUserData}/>
   <label className="form-check-label">
     Female
   </label>
