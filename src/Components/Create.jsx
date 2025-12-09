@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { createUser } from '../Features/UserDetailSlice';
 import { useNavigate } from 'react-router-dom';
-
+import { useToast } from './ToastContext';
 
 
 const Create = () => {
   const [users,setUsers] = useState({});
   const dispatch = useDispatch();
+  const { showSuccess, showWarning } = useToast();
 
   const getUserData = (e)=>{
     setUsers({...users,[e.target.name]:e.target.value})
@@ -18,10 +19,11 @@ const Create = () => {
   const handleSubmit = (e)=>{
     e.preventDefault();
     if(!users.name || !users.email || !users.age || !users.gender){
-      alert("Please fill all fields");
+      showWarning("Please fill all fields");
       return;
     }
     console.log("users",users);
+    showSuccess("User Added!...")
     dispatch(createUser(users));
     navigate("/read");
   }

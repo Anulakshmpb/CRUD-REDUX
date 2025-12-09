@@ -5,12 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { store } from './App/Store';
 import { Provider } from 'react-redux';
-
+import { ToastProvider } from './Components/ToastContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-    <App />
+   <ToastProvider>
+   <App />
+   </ToastProvider>
     </Provider>
     
   </React.StrictMode>
