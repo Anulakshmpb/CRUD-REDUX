@@ -1,17 +1,17 @@
-// ...existing code...
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { showUser, deleteUser } from '../Features/UserDetailSlice';
 import CustomModel from './CustomModel';
 import { Link } from 'react-router-dom';
-
+import { useToast } from './ToastContext';
 const Read = () => {
   const dispatch = useDispatch();
   const { users, loading, searchData } = useSelector((state) => state.app);
   const [id, setId] = useState();
   const [showPopup, setShowPopup] = useState(false);
   const [radioData, setRadioData] = useState("");
-
+  const { showSuccess, showWarning } = useToast();
+  const [delModal, setDelModal] = useState(false);
   useEffect(() => {
     dispatch(showUser());
   }, [dispatch]);
@@ -37,21 +37,21 @@ const Read = () => {
 
         <div className="d-flex align-items-center flex-column flex-sm-row" style={{ gap: 12 }}>
           <h4 className='text-center m-0' style={{ minWidth: 80 }}>Gender</h4>
-          <div className="btn-group" role="group" aria-label="Gender filters" style={{ boxShadow: '0 6px 18px rgba(2,6,23,0.06)', gap: 8, display: 'flex',alignItems: 'stretch' }}>
+          <div className="btn-group" role="group" aria-label="Gender filters" style={{ boxShadow: '0 6px 18px rgba(2,6,23,0.06)', gap: 8, display: 'flex', alignItems: 'stretch' }}>
             <input type="radio" className="btn-check" name="genderFilter" id="filterAll" value="" checked={radioData === ""} onChange={(e) => setRadioData(e.target.value)} />
-            <label className="btn btn-outline-light" htmlFor="filterAll" 
-            style={{ background: radioData === "" ? 'linear-gradient(to right, #3d88e4ff, #9f55e8ff)' : 'transparent', color: radioData === "" ? '#0b1220' : '#0b0b0bff', borderRadius: 8, flex: 1,padding: '10px 12px',border: '1px solid #9d9f9fff',transition: 'box-shadow .18s ease, transform .12s ease'}}>
+            <label className="btn btn-outline-light" htmlFor="filterAll"
+              style={{ background: radioData === "" ? 'linear-gradient(to right, #3d88e4ff, #9f55e8ff)' : 'transparent', color: radioData === "" ? '#0b1220' : '#0b0b0bff', borderRadius: 8, flex: 1, padding: '10px 12px', border: '1px solid #9d9f9fff', transition: 'box-shadow .18s ease, transform .12s ease' }}>
               All</label>
 
             <input type="radio" className="btn-check" name="genderFilter" id="filterMale" value="Male" checked={radioData === "Male"} onChange={(e) => setRadioData(e.target.value)} />
-            <label className="btn btn-outline-light" htmlFor="filterMale" 
-            style={{ background: radioData === "Male" ? 'linear-gradient(to right, #3d88e4ff, #9f55e8ff)' : 'transparent', color: radioData === "Male" ? '#0b1220' : '#080808ff', borderRadius: 8, flex: 1,padding: '10px 12px',border: '1px solid #9d9f9fff',transition: 'box-shadow .18s ease, transform .12s ease' }}>
+            <label className="btn btn-outline-light" htmlFor="filterMale"
+              style={{ background: radioData === "Male" ? 'linear-gradient(to right, #3d88e4ff, #9f55e8ff)' : 'transparent', color: radioData === "Male" ? '#0b1220' : '#080808ff', borderRadius: 8, flex: 1, padding: '10px 12px', border: '1px solid #9d9f9fff', transition: 'box-shadow .18s ease, transform .12s ease' }}>
               Male</label>
 
             <input type="radio" className="btn-check" name="genderFilter" id="filterFemale" value="Female" checked={radioData === "Female"} onChange={(e) => setRadioData(e.target.value)} />
-            <label className="btn btn-outline-light" htmlFor="filterFemale" 
-            style={{ background: radioData === "Female" ? 'linear-gradient(to right, #3d88e4ff, #9f55e8ff)' : 'transparent', color: radioData === "Female" ? '#0b1220' : '#070707ff', borderRadius: 8, flex: 1,padding: '10px 12px',border: '1px solid #9d9f9fff',transition: 'box-shadow .18s ease, transform .12s ease' }}>
-                Female</label>
+            <label className="btn btn-outline-light" htmlFor="filterFemale"
+              style={{ background: radioData === "Female" ? 'linear-gradient(to right, #3d88e4ff, #9f55e8ff)' : 'transparent', color: radioData === "Female" ? '#0b1220' : '#070707ff', borderRadius: 8, flex: 1, padding: '10px 12px', border: '1px solid #9d9f9fff', transition: 'box-shadow .18s ease, transform .12s ease' }}>
+              Female</label>
           </div>
         </div>
       </header>
@@ -116,7 +116,10 @@ const Read = () => {
                         type="button"
                         className="btn btn-sm btn-outline-danger"
                         style={{ flex: 1 }}
-                        onClick={() => { dispatch(deleteUser(ele.id)) }}
+                        onClick={() => {
+                          dispatch(deleteUser(ele.id));
+                          setDelModal(true);
+                        }}
                       >
                         Delete
                       </button>
@@ -149,4 +152,32 @@ const Read = () => {
   )
 }
 
+{
+  delModal && (
+    <div className="container py-4">
+      <h2>Are you sure,do you want to delete the user?</h2>
+      <button
+        type="button"
+        className="btn btn-sm btn-outline-danger"
+        style={{ flex: 1 }}
+        onClick={() => {
+          setDelModal(false);
+        }}
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        className="btn btn-sm btn-outline-danger"
+        style={{ flex: 1 }}
+        onClick={() => {
+          dispatch(deleteUser(ele.id));
+          setDelModal(false);
+        }}
+      >
+        Delete
+      </button>
+    </div>
+  )
+}
 export default Read
